@@ -1,5 +1,6 @@
 import type React from "react";
 import { Link } from "react-router-dom";
+import NameProject from "../../components/nameProject/content";
 
 type authPageLayoutProps = {
   authTitle: string;
@@ -14,12 +15,7 @@ export default function AuthPageLayout(props: authPageLayoutProps) {
   return (
     <div className="w-4xl mx-auto h-screen flex justify-between items-center">
       <div className="basis-md flex flex-col items-center gap-y-5">
-        <div className="flex gap-x-3 items-center justify-center">
-          <img src="/images/globalImg/Logo.png" alt="Logo" className="size-9" />
-          <h2 className="text-xl font-semibold">
-            SIMS PPOB galuh panca wirasa
-          </h2>
-        </div>
+        <NameProject />
         <h1 className="text-2xl font-semibold text-center max-w-xs leading-tight">
           {authTitle}
         </h1>
