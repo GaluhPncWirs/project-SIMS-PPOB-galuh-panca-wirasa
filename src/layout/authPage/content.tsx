@@ -5,25 +5,21 @@ import NameProject from "../../components/nameProject/content";
 type authPageLayoutProps = {
   authTitle: string;
   children: React.ReactNode;
-  titleBtnAction: string;
   callAction: string;
   href: string;
 };
 
 export default function AuthPageLayout(props: authPageLayoutProps) {
-  const { authTitle, children, titleBtnAction, callAction, href } = props;
+  const { authTitle, children, callAction, href } = props;
+
   return (
-    <div className="w-4xl mx-auto h-screen flex justify-between items-center">
-      <div className="basis-md flex flex-col items-center gap-y-5">
+    <div className="flex items-center">
+      <div className="w-1/2 flex flex-col items-center gap-y-5">
         <NameProject />
         <h1 className="text-2xl font-semibold text-center max-w-xs leading-tight">
           {authTitle}
         </h1>
-        <div className="flex flex-col gap-y-6 w-10/12">{children}</div>
-        <button className="bg-[#f5261b] text-[#e8e8e8] tracking-wider font-semibold text-xl w-10/12 py-2.5 rounded-md">
-          {titleBtnAction}
-        </button>
-
+        {children}
         <h3>
           {callAction}{" "}
           <Link
@@ -34,7 +30,7 @@ export default function AuthPageLayout(props: authPageLayoutProps) {
           </Link>
         </h3>
       </div>
-      <img src="/images/loginPage/Illustrasi Login.png" className="w-md" />
+      <img src="/images/loginPage/Illustrasi Login.png" className="w-1/2" />
     </div>
   );
 }

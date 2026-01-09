@@ -14,7 +14,7 @@ const rootApp = document.getElementById("root");
 
 const route = createBrowserRouter([
   {
-    path: "/Login",
+    path: "/",
     element: <LoginPage />,
   },
   {
@@ -22,7 +22,7 @@ const route = createBrowserRouter([
     element: <RegisterPage />,
   },
   {
-    path: "/",
+    path: "/Homepage",
     element: <HomePage />,
   },
   {
