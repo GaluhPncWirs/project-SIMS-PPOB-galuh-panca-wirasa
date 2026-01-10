@@ -6,43 +6,80 @@ import { fetchApi } from "../../services/api";
 import { useGetToken } from "../../hooks/useGetToken/getToken";
 import { formatRupiah } from "../../hooks/useFormatRupiah/formatRupiah";
 import { formatDate } from "../../hooks/useformatDate/formatDate";
+import Loading from "../../components/loading/content";
+
+type transaksiType = {
+  invoice_number: string;
+  transaction_type: string;
+  description: string;
+  total_amount: number;
+  created_on: string;
+};
+
+type HistoryResponse = {
+  offset: number;
+  limit: number;
+  records: transaksiType[];
+};
 
 export default function TransactionPage() {
-  const [historyTransaksi, setHistoryTransaksi] = useState<any>(null);
+  const [allRecords, setAllRecords] = useState<transaksiType[]>([]);
+  const [historyTransaksi, setHistoryTransaksi] =
+    useState<HistoryResponse | null>(null);
   const token = useGetToken();
-  const [showAll, setShowAll] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [offset, setOffset] = useState(0);
+
+  const limit = 5;
+
+  async function fetchTransaksi(offset: number) {
+    setIsLoading(true);
+    try {
+      const response = await fetchApi(
+        `/transaction/history?offset=${offset}&limit=${limit}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await response.json();
+
+      setHistoryTransaksi(data.data);
+
+      if (offset === 0) {
+        setAllRecords(data.data.records);
+      } else {
+        setAllRecords((prev) => [...prev, ...data.data.records]);
+      }
+
+      setHasMore(data.data.records.length === limit);
+    } catch (error) {
+      console.error("Error fetching transactions:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchTransaksi(0);
+  }, [token]);
 
   const sortedData = useMemo(() => {
-    const records = historyTransaksi?.records ?? [];
-
-    return [...records].sort(
+    return [...allRecords].sort(
       (a, b) =>
         new Date(b.created_on).getTime() - new Date(a.created_on).getTime()
     );
-  }, [historyTransaksi]);
+  }, [allRecords]);
 
-  const visibleData = showAll
-    ? sortedData
-    : sortedData.slice(0, historyTransaksi?.limit ?? 3);
-
-  useEffect(() => {
-    async function handleTransaction() {
-      const req = await fetchApi("/transaction/history", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      const res = await req.json();
-      if (res) {
-        setHistoryTransaksi(res.data);
-      }
-    }
-
-    handleTransaction();
-  }, [token]);
+  const handleShowMore = () => {
+    const newOffset = offset + limit;
+    setOffset(newOffset);
+    fetchTransaksi(newOffset);
+  };
 
   return (
     <ContainerRoot>
@@ -51,7 +88,7 @@ export default function TransactionPage() {
         <h1 className="tracking-wide font-semibold text-xl">Semua Transaksi</h1>
 
         <div className="mt-5 grid grid-cols-1 gap-y-7">
-          {visibleData.map((trx) => (
+          {sortedData.map((trx) => (
             <div
               key={trx.invoice_number}
               className="border-2 border-[#e8e8e8] py-3 px-7"
@@ -85,13 +122,25 @@ export default function TransactionPage() {
           ))}
         </div>
 
-        {!showAll && sortedData.length > historyTransaksi?.limit && (
+        {isLoading && <Loading />}
+
+        {!isLoading && hasMore && (
           <button
-            onClick={() => setShowAll(true)}
-            className="text-[#f5261b] font-semibold tracking-wide mt-5 text-lg text-center w-full"
+            onClick={handleShowMore}
+            className="text-[#f5261b] font-semibold tracking-wide mt-5 text-lg text-center w-full hover:underline"
           >
             Show more
           </button>
+        )}
+
+        {!isLoading && !hasMore && sortedData.length > 0 && (
+          <p className="text-center mt-5 text-gray-500 text-sm">
+            Tidak ada transaksi lainnya
+          </p>
+        )}
+
+        {!isLoading && sortedData.length === 0 && (
+          <p className="text-center mt-5 text-gray-500">Belum ada transaksi</p>
         )}
       </div>
     </ContainerRoot>

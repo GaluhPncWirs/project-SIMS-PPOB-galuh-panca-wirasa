@@ -13,14 +13,14 @@ export default function AuthPageLayout(props: authPageLayoutProps) {
   const { authTitle, children, callAction, href } = props;
 
   return (
-    <div className="flex items-center">
-      <div className="w-1/2 flex flex-col items-center gap-y-5">
+    <div className="flex flex-col lg:flex-row items-center min-h-screen px-4 py-8 lg:py-0">
+      <div className="w-full lg:w-1/2 flex flex-col items-center gap-y-4 md:gap-y-5 max-w-md lg:max-w-none">
         <NameProject />
-        <h1 className="text-2xl font-semibold text-center max-w-xs leading-tight">
+        <h1 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-center max-w-xs lg:max-w-sm leading-tight px-4">
           {authTitle}
         </h1>
         {children}
-        <h3>
+        <h3 className="text-sm sm:text-base text-center px-4">
           {callAction}{" "}
           <Link
             to={href}
@@ -30,7 +30,11 @@ export default function AuthPageLayout(props: authPageLayoutProps) {
           </Link>
         </h3>
       </div>
-      <img src="/images/loginPage/Illustrasi Login.png" className="w-1/2" />
+      <img
+        src="/images/loginPage/Illustrasi Login.png"
+        className="w-full lg:w-1/2 max-w-sm lg:max-w-none mt-8 lg:mt-0 object-contain"
+        alt="Login Ilustrasi"
+      />
     </div>
   );
 }

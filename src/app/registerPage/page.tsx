@@ -1,4 +1,4 @@
-import { AtSign, User, X } from "lucide-react";
+import { AtSign, Lock, User, X } from "lucide-react";
 import Input from "../../components/input/content";
 import AuthPageLayout from "../../layout/authPage/content";
 import { useState } from "react";
@@ -66,7 +66,7 @@ export default function RegisterPage() {
       >
         <form
           onSubmit={(e) => handleRegisterAccount(e)}
-          className="grid grid-cols-1 gap-y-6 w-2/3"
+          className="grid grid-cols-1 gap-y-6 w-3/4"
         >
           <div>
             <Input
@@ -74,6 +74,7 @@ export default function RegisterPage() {
               placeholder="masukkan email anda"
               inputId="email"
               isError={isEmailAlreadyExists}
+              valueInput=""
             >
               <AtSign />
             </Input>
@@ -88,6 +89,7 @@ export default function RegisterPage() {
             placeholder="nama depan"
             inputId="firstName"
             isError={false}
+            valueInput=""
           >
             <User />
           </Input>
@@ -96,6 +98,7 @@ export default function RegisterPage() {
             placeholder="nama belakang"
             inputId="lastName"
             isError={false}
+            valueInput=""
           >
             <User />
           </Input>
@@ -105,8 +108,9 @@ export default function RegisterPage() {
               placeholder="buat password"
               inputId="password"
               isError={passwordLess8Character}
+              valueInput=""
             >
-              <User />
+              <Lock />
             </Input>
             {passwordLess8Character && (
               <h3 className="text-[#f5261b] tracking-wide mt-2 text-end text-sm">
@@ -120,8 +124,9 @@ export default function RegisterPage() {
               placeholder="konfirmasi password"
               inputId="confirmPassword"
               isError={isNotSamePassword}
+              valueInput=""
             >
-              <User />
+              <Lock />
             </Input>
             {isNotSamePassword && (
               <h3 className="text-[#f5261b] tracking-wide mt-2 text-end text-sm">

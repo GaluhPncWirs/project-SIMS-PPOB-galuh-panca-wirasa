@@ -1,22 +1,27 @@
-import { AtSign, Pencil, User } from "lucide-react";
+import { AtSign, Check, Pencil, User } from "lucide-react";
 import ContainerRoot from "../../layout/containerRoot/content";
-// import { useGetToken } from "../../hooks/useGetToken/getToken";
 import { useGetDataUser } from "../../hooks/useGetUserData/getUserData";
 import React, { useState } from "react";
 import { useGetToken } from "../../hooks/useGetToken/getToken";
 import { fetchApi } from "../../services/api";
+import Loading from "../../components/loading/content";
+import ModalBox from "../../layout/modalBox/content";
+import { useNavigate } from "react-router-dom";
 
 export default function AccountPage() {
   const token = useGetToken();
   const dataUser = useGetDataUser();
-  // const [updateProfile, setUpdateProfile] = useState()
   const [editProfile, setEditProfile] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   async function handleEditAccount(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const valueInput = event.target as HTMLFormElement;
 
     try {
+      setIsLoading(true);
       const req = await fetchApi("/profile/update", {
         method: "PUT",
         headers: {
@@ -32,11 +37,12 @@ export default function AccountPage() {
 
       const res = await req.json();
       if (res) {
-        console.log("berhasil edit profile");
-        console.log(res);
+        setIsSuccess(true);
       }
     } catch (error) {
       console.error("gagal fetch api", error);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -46,9 +52,10 @@ export default function AccountPage() {
     const file = event.target.files[0];
 
     const formData = new FormData();
-    formData.append("image", file);
+    formData.append("file", file);
 
     try {
+      setIsLoading(true);
       const req = await fetchApi("/profile/image", {
         method: "PUT",
         headers: {
@@ -59,13 +66,22 @@ export default function AccountPage() {
 
       const res = await req.json();
       if (res) {
-        console.log("berhasil edit profile");
-        console.log(res);
+        setIsSuccess(true);
       }
     } catch (error) {
       console.error("gagal fetch api", error);
+    } finally {
+      setIsLoading(false);
     }
   }
+
+  function handleLogout() {
+    localStorage.removeItem("loginToken");
+    navigate("/");
+  }
+
+  // amboi123@gmail.com
+  // asdfghjkl
 
   return (
     <ContainerRoot>
@@ -73,9 +89,9 @@ export default function AccountPage() {
         <div className="w-72 mx-auto">
           <div className="relative flex justify-center items-center">
             <img
-              src="/images/globalImg/Profile Photo.png"
+              src={dataUser?.profile_image}
               alt="Profile"
-              className="size-32"
+              className="size-32 rounded-full"
             />
             <div className="absolute border-2 border-[#e8e8e8] bg-white p-1.5 rounded-full right-16 bottom-0">
               <label htmlFor="edit-image" className="cursor-pointer">
@@ -150,8 +166,18 @@ export default function AccountPage() {
                 <User className="size-4.5 absolute left-3.5" />
               </div>
             </div>
-            <button className="bg-[#f5261b] text-[#e8e8e8] rounded-lg py-3 font-semibold tracking-wide text-lg">
+            <button
+              className="border-2 border-[#f5261b] text-[#f5261b] rounded-lg py-3 font-semibold tracking-wide text-lg"
+              type="submit"
+            >
               Simpan
+            </button>
+            <button
+              className="bg-[#f5261b] text-[#e8e8e8] rounded-lg py-3 font-semibold tracking-wide text-lg"
+              type="button"
+              onClick={() => setEditProfile(false)}
+            >
+              Batalkan
             </button>
           </form>
         ) : (
@@ -184,15 +210,35 @@ export default function AccountPage() {
             <button
               className="border-2 border-[#f5261b] text-[#f5261b] rounded-lg py-3 font-semibold tracking-wide text-lg"
               onClick={() => setEditProfile(true)}
+              type="button"
             >
               Edit Profile
             </button>
-            <button className="bg-[#f5261b] text-[#e8e8e8] rounded-lg py-3 font-semibold tracking-wide text-lg">
+            <button
+              className="bg-[#f5261b] text-[#e8e8e8] rounded-lg py-3 font-semibold tracking-wide text-lg"
+              onClick={handleLogout}
+            >
               Logout
             </button>
           </div>
         )}
+
+        <ModalBox isOpen={isSuccess}>
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500">
+            <Check className="text-white size-7" strokeWidth={3} />
+          </div>
+          <p className="text-xl text-gray-600 font-semibold">
+            Berhasil edit profile
+          </p>
+          <button
+            onClick={() => setIsSuccess(false)}
+            className="mt-5 text-lg font-semibold text-[#f5261b]"
+          >
+            Oke
+          </button>
+        </ModalBox>
       </div>
+      {isLoading && <Loading />}
     </ContainerRoot>
   );
 }

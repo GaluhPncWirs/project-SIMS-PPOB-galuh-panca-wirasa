@@ -78,7 +78,7 @@ export default function LoginPage() {
       >
         <form
           onSubmit={(e) => handleLoginAccount(e)}
-          className="grid grid-cols-1 gap-y-6 w-2/3"
+          className="grid grid-cols-1 gap-y-6 w-3/4"
         >
           <Input
             typeInput="email"
