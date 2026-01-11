@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { Check, Wallet } from "lucide-react";
+import { Check, Wallet, X } from "lucide-react";
 import { useState } from "react";
 import { useGetToken } from "../../../hooks/useGetToken/getToken";
 import { useGetService } from "../../../hooks/useGetService/getService";
@@ -21,6 +21,7 @@ export default function PaymentPage() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [confirmTransaction, setConfirmTransaction] = useState(false);
   const [pendingData, setPendingData] = useState<any>(null);
+  const [errorLessSaldo, setErrorlessSaldo] = useState(false);
 
   function handleTransaction() {
     setPendingData({
@@ -49,7 +50,7 @@ export default function PaymentPage() {
       const res = await req.json();
 
       if (res.status === 102) {
-        alert(res.message);
+        setErrorlessSaldo(true);
       } else {
         setIsSuccess(true);
         setPendingData(null);
@@ -87,6 +88,30 @@ export default function PaymentPage() {
             </div>
           </div>
         </div>
+
+        <ModalBox isOpen={errorLessSaldo}>
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[#f5261b]">
+            <X className="text-white size-7" strokeWidth={3} />
+          </div>
+          <p className=" text-gray-600 font-semibold">
+            {`Saldo anda kurang untuk membayar ${serviceData?.service_name}`}
+          </p>
+
+          <h1 className="mt-3 text-xl font-bold text-gray-900">
+            {`Dengan tarif ${
+              formatRupiah(serviceData?.service_tariff) || "Rp.0"
+            }`}
+          </h1>
+
+          <div className="mt-5 flex flex-col gap-y-3 items-center text-lg font-semibold">
+            <button
+              onClick={() => setErrorlessSaldo(false)}
+              className="text-[#f5261b]"
+            >
+              Oke
+            </button>
+          </div>
+        </ModalBox>
 
         <ModalBox isOpen={confirmTransaction}>
           <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[#f5261b]">

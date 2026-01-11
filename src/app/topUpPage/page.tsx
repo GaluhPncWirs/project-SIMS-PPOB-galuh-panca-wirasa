@@ -11,12 +11,8 @@ import Loading from "../../components/loading/content";
 
 export default function TopUpPage() {
   const token = useGetToken();
-  const [nominalTopupClick, setNominalTopupClick] = useState<number | null>(
-    null
-  );
-  const [nominalTopupInput, setNominalTopupInput] = useState<number | null>(
-    null
-  );
+  const [nominalTopupClick, setNominalTopupClick] = useState<number>(0);
+  const [nominalTopupInput, setNominalTopupInput] = useState<number>(0);
 
   const nominalFinal = nominalTopupClick ?? nominalTopupInput;
   const isNominalValid = Boolean(nominalFinal && nominalFinal > 0);
@@ -28,12 +24,15 @@ export default function TopUpPage() {
   const [pendingData, setPendingData] = useState<any>(null);
 
   function handleTopupSaldo() {
+    const selectedNominal =
+      nominalTopupInput > 0 ? nominalTopupInput : nominalTopupClick;
+
     setPendingData({
-      top_up_amount: nominalTopupInput,
+      top_up_amount: selectedNominal,
       transaction_type: "TOPUP",
     });
 
-    setNominalTopup(formatRupiah(nominalTopupInput ?? 0));
+    setNominalTopup(formatRupiah(selectedNominal));
     setConfirmTopUp(true);
   }
 
