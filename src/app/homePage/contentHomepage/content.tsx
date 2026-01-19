@@ -24,7 +24,7 @@ const promoMenarik: any = [
   },
 ];
 
-export default function Home() {
+export default function HomePage() {
   const { services, loading } = useGetService();
 
   return (
@@ -70,7 +70,7 @@ export default function Home() {
               key={i}
               src={item.srcImg}
               alt={item.altImg}
-              className="h-32 sm:h-40 md:h-48 lg:h-auto min-w-50 sm:min-w-62.5 md:min-w-75 rounded-lg object-cover shrink-0"
+              className="h-32 sm:h-40 md:h-48 lg:h-auto min-w-50 sm:min-w-62.5 md:min-w-75 rounded-lg object-cover"
               loading="eager"
             />
           ))}

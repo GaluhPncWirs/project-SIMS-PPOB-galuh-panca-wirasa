@@ -30,7 +30,7 @@ export default function TransactionPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [offset, setOffset] = useState(0);
   console.log(historyTransaksi);
-  const limit = 5;
+  const limit = 3;
 
   async function fetchTransaksi(offset: number) {
     setIsLoading(true);
@@ -74,11 +74,11 @@ export default function TransactionPage() {
     );
   }, [allRecords]);
 
-  const handleShowMore = () => {
+  function handleShowMore() {
     const newOffset = offset + limit;
     setOffset(newOffset);
     fetchTransaksi(newOffset);
-  };
+  }
 
   return (
     <ContainerRoot>
@@ -126,9 +126,11 @@ export default function TransactionPage() {
                       }`}
                     >
                       {trx.transaction_type === "PAYMENT" ? (
-                        <MinusIcon className="size-5 sm:size-6 flex-0" />
+                        <>
+                          <MinusIcon className="size-5 sm:size-6" />
+                        </>
                       ) : (
-                        <PlusIcon className="size-5 sm:size-6 flex-0" />
+                        <PlusIcon className="size-5 sm:size-6" />
                       )}
 
                       <h3 className="text-lg sm:text-xl font-semibold tracking-wider break-all">

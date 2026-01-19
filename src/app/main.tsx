@@ -7,9 +7,9 @@ import RegisterPage from "./registerPage/page";
 import TopUpPage from "./topUpPage/page";
 import TransactionPage from "./transactionPage/page";
 import AccountPage from "./accountPage/page";
-import Home from "./homePage/contentHomepage/content";
 import ParentHomePage from "./homePage/page";
 import PaymentPage from "./homePage/contentPaymentPage/page";
+import HomePage from "./homePage/contentHomepage/content";
 
 const rootApp = document.getElementById("root");
 
@@ -28,7 +28,7 @@ const route = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Home />,
+        element: <HomePage />,
       },
       {
         path: "Pembayaran/:service",
